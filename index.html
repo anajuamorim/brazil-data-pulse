@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Dashboard interativo de indicadores econômicos com dados públicos do Banco Mundial.">
+  <title>Brazil Data Pulse | Indicadores econômicos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="#"><span class="mark"><i></i><i></i><i></i></span><span>DATA<span class="light">PULSE</span></span></a>
+    <p class="nav-label">EXPLORADOR</p>
+    <a class="nav-link active" href="#overview">Visão geral</a>
+    <a class="nav-link" href="#trends">Séries históricas</a>
+    <a class="nav-link" href="#comparison">Comparação regional</a>
+    <div class="side-bottom"><span class="live"><i></i><span id="connectionLabel">Conectando à fonte</span></span><p>Dados públicos<br>World Bank API</p><a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api" target="_blank" rel="noreferrer">Documentação da API ↗</a></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>PORTFÓLIO / DATA ANALYTICS</span><span id="updatedAt">Consultando dados...</span></header>
+    <section class="hero" id="overview">
+      <div><p class="eyebrow">PAINEL DE INTELIGÊNCIA ECONÔMICA</p><h1>Brasil, em<br><em>perspectiva.</em></h1><p class="intro">Explore como os principais indicadores econômicos evoluíram ao longo do tempo. Dados públicos, contexto e perguntas para investigar.</p><div class="tags"><span>API PÚBLICA</span><span>SÉRIES HISTÓRICAS</span><span>FILTROS DINÂMICOS</span></div></div>
+      <div class="orb" aria-hidden="true"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="core">BR<small>DATA<br>PULSE</small></div></div>
+    </section>
+    <section class="filters panel"><div><strong>Personalize a análise</strong><small>Os gráficos acompanham o período selecionado.</small></div><label>ANO INICIAL<select id="startYear"></select></label><label>ANO FINAL<select id="endYear"></select></label><button id="resetFilters" class="button">Restaurar</button></section>
+    <div id="loading" class="panel loading"><span class="spinner"></span><div><strong>Buscando indicadores públicos</strong><small>Consultando a API do Banco Mundial…</small></div></div>
+    <div id="error" class="panel error" hidden><strong>Não foi possível carregar os dados agora.</strong><p>A API pode estar temporariamente indisponível. Verifique a conexão e tente novamente.</p><button id="retryButton" class="button">Tentar novamente</button></div>
+    <section id="dashboard" hidden>
+      <div class="section-heading"><div><p class="eyebrow">01 / RESUMO EXECUTIVO</p><h2>Os números por trás do cenário</h2></div><small>Último ano disponível no período selecionado</small></div>
+      <div class="kpis">
+        <article class="kpi"><span>CRESCIMENTO DO PIB</span><strong id="gdpValue">—</strong><small id="gdpYear">—</small><div class="accent green"></div></article>
+        <article class="kpi"><span>INFLAÇÃO AO CONSUMIDOR</span><strong id="inflationValue">—</strong><small id="inflationYear">—</small><div class="accent blue"></div></article>
+        <article class="kpi"><span>DESEMPREGO</span><strong id="unemploymentValue">—</strong><small id="unemploymentYear">—</small><div class="accent purple"></div></article>
+        <article class="kpi"><span>POPULAÇÃO</span><strong id="populationValue">—</strong><small id="populationYear">—</small><div class="accent orange"></div></article>
+      </div>
+      <div class="section-heading" id="trends"><div><p class="eyebrow">02 / SÉRIES HISTÓRICAS</p><h2>Como os indicadores mudaram?</h2></div></div>
+      <div class="charts">
+        <article class="panel chart-card wide"><div class="chart-title"><div><h3>Crescimento do PIB</h3><p>Variação percentual anual da economia brasileira.</p></div><span>%</span></div><div class="chart-wrap"><canvas id="gdpChart"></canvas></div><p class="insight" id="gdpInsight">Calculando leitura dos dados…</p></article>
+        <article class="panel chart-card"><div class="chart-title"><div><h3>Inflação</h3><p>Variação anual do índice de preços ao consumidor.</p></div><span>%</span></div><div class="chart-wrap"><canvas id="inflationChart"></canvas></div><p class="insight" id="inflationInsight">Calculando…</p></article>
+        <article class="panel chart-card"><div class="chart-title"><div><h3>Desemprego</h3><p>Estimativa modelada da taxa de desemprego.</p></div><span>%</span></div><div class="chart-wrap"><canvas id="unemploymentChart"></canvas></div><p class="insight" id="unemploymentInsight">Calculando…</p></article>
+        <article class="panel chart-card"><div class="chart-title"><div><h3>População brasileira</h3><p>Evolução do total de habitantes.</p></div><span>MILHÕES</span></div><div class="chart-wrap"><canvas id="populationChart"></canvas></div><p class="insight" id="populationInsight">Calculando…</p></article>
+      </div>
+      <article class="panel comparison" id="comparison"><div class="chart-title"><div><p class="eyebrow">03 / CONTEXTO REGIONAL</p><h3>Brasil e América Latina</h3><p>Compare o crescimento do PIB entre economias selecionadas.</p></div><label>ANO DE COMPARAÇÃO<select id="compareYear"></select></label></div><div class="compare-layout"><div class="compare-chart"><canvas id="countryChart"></canvas></div><div class="compare-note"><strong>Contexto importa.</strong><p>Taxa positiva indica expansão do PIB; taxa negativa indica contração. Diferenças entre países podem refletir ciclos econômicos, estrutura produtiva e choques distintos.</p><small>Valores ausentes não são tratados como zero.</small></div></div></article>
+      <section class="insights"><div class="section-heading"><div><p class="eyebrow">04 / LEITURAS AUTOMÁTICAS</p><h2>Pistas para investigar</h2></div><small>Descrições calculadas para o período selecionado</small></div><div class="insight-grid"><article><span>A</span><div><h3>Ritmo de crescimento</h3><p id="autoInsightGdp">—</p></div></article><article><span>B</span><div><h3>Comportamento dos preços</h3><p id="autoInsightInflation">—</p></div></article><article><span>C</span><div><h3>Pergunta de análise</h3><p id="autoInsightQuestion">—</p></div></article></div></section>
+    </section>
+    <footer><div><a class="brand" href="#"><span class="mark"><i></i><i></i><i></i></span><span>DATA<span class="light">PULSE</span></span></a><p>Projeto de portfólio em análise de dados.</p></div><div><p>Fonte: World Bank Indicators API · World Development Indicators</p><p>Indicadores podem ter anos de atualização diferentes; valores ausentes são exibidos como indisponíveis.</p><a href="https://data.worldbank.org/" target="_blank" rel="noreferrer">Explorar dados do Banco Mundial ↗</a></div></footer>
+  </main>
+</div>
+</body>
+</html>
